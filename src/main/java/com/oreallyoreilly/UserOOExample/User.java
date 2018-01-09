@@ -1,12 +1,12 @@
 package com.oreallyoreilly.UserOOExample;
 
-import java.sql.Timestamp;
 
 /*****************************************************************
 *	Date: 2017
 *	@author COR
 *  
-*
+* User class
+* 
 *****************************************************************/
 
 public class User {
@@ -15,32 +15,20 @@ public class User {
 	//............................................................
 	//declare objects
 	
-	private int userID;
+	private int 	userID;
 	private String userName;
 	private String userEmail;
 	private String userRole;
 	private String userToken;
-	private int userStatus;
+	private int 	userStatus;
 	private String userLastUpdate;
 	
 	
 	// CONSTRUCTORS
 	//............................................................
 	
-	/**
-	 * Empty constructor
-	 */
 	public User(){}
 	
-	/**
-	 * @param userID
-	 * @param userName
-	 * @param userEmail
-	 * @param userRole
-	 * @param userToken
-	 * @param userStatus
-	 * @param userLastUpdate
-	 */
 	public User(
 			int userID, 
 			String userName, 
@@ -130,6 +118,10 @@ public class User {
 	public void setUserLastUpdate(String userLastUpdate) {
 		this.userLastUpdate = userLastUpdate;
 	}
+	
+	/**
+	 * Overriding the Object method toString with an implementation for this class
+	 */
 
 	@Override
 	public String toString() {

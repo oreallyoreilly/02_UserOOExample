@@ -16,11 +16,23 @@ import com.oreallyoreilly.UserOOExample.User;
  *	Date: 2017
  *	@author COR
  *  
- * Ref: 
+ * References: 
+ * 
  * https://github.com/xerial/sqlite-jdbc#using-sqlitejdbc-with-maven2
  * http://tutorials.jenkov.com/java-collections/list.html
  * http://www.sqlitetutorial.net/sqlite-date/
  * 
+ * The purpose of this application is to provide an example for the following:
+ * - Demonstrates the use of development tools : GIT, MAVEN, Eclipse
+ * - Demonstrates how to use Eclipse
+ * - Provides a refresher of OOP in Java
+ * - Query a SQLite database User table and displays the users
+ * - Provide an introduction to collections
+ * 
+ * 	TODO: 
+ * 	- It would be better to take the location of the sqlite database as a parameter
+ * 	- The ListArray<User> is populated but not really used ( just a prep for later examples)
+ * 	
  *****************************************************************/
 
 public class App
@@ -38,8 +50,6 @@ public class App
 	// for windows the database file location would be: "jdbc:sqlite:C://Dropbox/_DEV2017/DATA/oreallyoreilly.db"
 	// for MAC or Linux database file location would be: "jdbc:sqlite:/Volumes/DataHD/Dropbox/_DEV2017/DATA/oreallyoreilly.db"
 	
-	// TODO: It would be better to take the location of the sqlite database as a parameter
-	
 	private String databaseFile = "jdbc:sqlite:/Volumes/DataHD/Dropbox/_DEV2017/DATA/oreallyoreilly.db";
 	private	Scanner someInput;
 	private Date today;
@@ -47,6 +57,7 @@ public class App
 	
 	// CONSTRUCTORS
 	//............................................................
+	
 	public App()
 	{
 		//initialise variables
@@ -98,8 +109,10 @@ public class App
               user.setUserStatus(resultSet.getInt("userStatus"));
               user.setUserLastUpdate(resultSet.getString("userLastUpdate"));
 
-              // print the results
+              // print the results by using the toString() on User
               System.out.println(user);
+              
+              // putting the user objects into the list but not using them yet
               this.userList.add(user);
           }
         	  
