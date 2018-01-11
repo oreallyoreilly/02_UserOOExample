@@ -27,7 +27,12 @@ public class User {
 	// CONSTRUCTORS
 	//............................................................
 	
+	// if you comment out this constructor you will see errors in App as it uses
+	// setters and getters to create the user objects - good for demo if errors in IDE
+	
 	public User(){}
+	
+	// Second constructor allowed as a different signature
 	
 	public User(
 			int userID, 
