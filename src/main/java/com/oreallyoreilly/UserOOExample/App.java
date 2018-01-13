@@ -52,7 +52,7 @@ public class App
 	// for windows the database file location would be: "jdbc:sqlite:C://Dropbox/_DEV2017/DATA/oreallyoreilly.db"
 	// for MAC or Linux database file location would be: "jdbc:sqlite:/Volumes/DataHD/Dropbox/_DEV2017/DATA/oreallyoreilly.db"
 	
-	private String databaseFile = "jdbc:sqlite:/Volumes/DataHD/Dropbox/_DEV2017/JAVA-BASIC/02_UserOOExample/data/oreallyoreilly.db";
+	private String databaseFile = "jdbc:sqlite:/Volumes/DataHD/Dropbox/_DEV2017/JAVA-BASIC/02_UserOOExample/database/oreallyoreilly.db";
 	private	Scanner someInput;
 	private Date today;
 	
