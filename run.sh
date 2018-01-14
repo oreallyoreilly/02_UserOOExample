@@ -26,3 +26,4 @@ java -cp target/02_UserOOExample-v1.jar com.oreallyoreilly.UserOOExample.App -d 
 
 echo "Press ENTER to close window ..."
 read aKey
+

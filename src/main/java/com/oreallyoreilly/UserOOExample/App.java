@@ -19,6 +19,9 @@ import java.util.Arrays;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /*****************************************************************
  *
@@ -27,6 +30,7 @@ import java.io.IOException;
  *  
  * References: 
  * 
+ * SQLite References
  * https://github.com/xerial/sqlite-jdbc#using-sqlitejdbc-with-maven2
  * http://tutorials.jenkov.com/java-collections/list.html
  * http://www.sqlitetutorial.net/sqlite-date/
@@ -36,6 +40,8 @@ import java.io.IOException;
  * https://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html#ServicesResourceTransformer
  * https://www.thoughtco.com/using-command-line-arguments-2034196
  * https://stackoverflow.com/questions/8944199/how-to-deal-with-command-line-arguments-in-java
+ * 
+ * Command Line References
  * http://pholser.github.io/jopt-simple/
  * Maven: Jopt-Simple download: http://pholser.github.io/jopt-simple/download.html
  * https://dzone.com/articles/java-clis-part-6-jopt-simple
@@ -44,6 +50,17 @@ import java.io.IOException;
  * http://marxsoftware.blogspot.ie/2017/11/java-cmd-line-observations.html
  * https://github.com/remkop/picocli/wiki/CLI-Comparison
  * http://www.massapi.com/source/github/20/81/2081705684/src/java/voldemort/tools/ExportBDBToTextDump.java.html#88
+ * 
+ * Logging References
+ * https://dzone.com/articles/how-configure-slf4j-different
+ * http://www.logicbig.com/tutorials/misc/java-logging/slf4j-with-log4j2/
+ * https://stackoverflow.com/questions/41498021/is-it-worth-to-use-slf4j-with-log4j2
+ * https://examples.javacodegeeks.com/enterprise-java/log4j/log4j-2-best-practices-example/
+ * http://www.baeldung.com/log4j2-appenders-layouts-filters
+ * http://musigma.org/logging/2017/11/06/logging.html
+ * https://memorynotfound.com/log4j2-with-log4j2-xml-configuration-example/
+ * 
+ * Markdown references
  * https://daringfireball.net/projects/markdown/syntax
  * 
  * The purpose of this application is to provide an example for the following:
@@ -55,9 +72,8 @@ import java.io.IOException;
  * - Provide an introduction to the command line interface and show that there are many solution options to just this simple feature
  * - Markdown syntax for readme's
  * 
- * 	TODO: 
- * 	- The ListArray<User> is populated but not really used ( just a prep for later examples)
- *  - The Role class is not used ( just a prep for later examples)
+ * 	TODO: The ListArray<User> is populated but not really used ( just a prep for later examples)
+ *  TODO: The Role class is not used ( just a prep for later examples)
  * 	
  *****************************************************************/
 
@@ -153,15 +169,18 @@ public class App
 	
 	// DATA
 	//............................................................
-	//declare objects
+	//define attributes
 	
-	// for windows the database file location would be: "jdbc:sqlite:C://Dropbox/_DEV2017/DATA/oreallyoreilly.db"
-	// for MAC or Linux database file location would be: "jdbc:sqlite:/Volumes/DataHD/Dropbox/_DEV2017/JAVA-BASIC/02_UserOOExample/database/oreallyoreilly.db"
+	private static final Logger LOG = LogManager.getLogger(App.class);
+	
+	private	Scanner someInput;
+	private Date today;
+	
+	// for windows the database file location would be: "jdbc:sqlite:C://path/oreallyoreilly.db"
+	// for MAC or Linux database file location would be: "jdbc:sqlite:/Volumes/VolumeName/path/02_UserOOExample/database/oreallyoreilly.db"
 	// private String databaseFile = "jdbc:sqlite:/Volumes/DataHD/Dropbox/_DEV2017/JAVA-BASIC/02_UserOOExample/database/oreallyoreilly.db";
 	
 	String databaseFile;
-	private	Scanner someInput;
-	private Date today;
 	
 	// if in Eclipse User and Role classes appear as errors it means you need to do a Maven Update on the project
 	// Right Click > Maven > Update Project as some times after a Maven clean 
@@ -179,6 +198,9 @@ public class App
 	{
 		//initialise variables
 		this.databaseFile = dbFile;
+		
+		//log test
+		testLogOutput();
 		
         //create objects 
 		this.someInput = new Scanner(System.in);
@@ -303,6 +325,21 @@ public class App
 	      {
 	         System.out.println("ERROR: Unable to print usage - " + ioEx);
 	      }
-	 }
+	 }//EOM
+	 
+	/**
+	 * Test the Log4J2 logging
+	 */
+	 private static void testLogOutput()
+	 {
+		LOG.debug("This will be printed on debug");
+        LOG.info("This will be printed on info");
+        LOG.warn("This will be printed on warn");
+        LOG.error("This will be printed on error");
+        LOG.fatal("This will be printed on fatal");
+
+        LOG.info("Appending string: {}.", "Hello, World");
+		 
+	 }//EOM
 	
 }//EOC

@@ -9,6 +9,8 @@ The purpose of this application is to provide an example for the following:
 - Query a SQLite database User table and displays the users
 - Provide an introduction to collections
 - Provide an introduction to GITHUB and its functionality
+- Provide an introduction to the command line interface
+- Provide an introduction to the Markdown syntax for readme's
 
 
 ## License 
