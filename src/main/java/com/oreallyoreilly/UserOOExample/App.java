@@ -30,13 +30,14 @@ import java.io.IOException;
  * https://github.com/xerial/sqlite-jdbc#using-sqlitejdbc-with-maven2
  * http://tutorials.jenkov.com/java-collections/list.html
  * http://www.sqlitetutorial.net/sqlite-date/
+ * http://www.sqlitetutorial.net/sqlite-java/
  * https://github.com/xerial/sqlite-jdbc
  * https://stackoverflow.com/questions/16725377/no-suitable-driver-found-sqlite
  * https://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html#ServicesResourceTransformer
  * https://www.thoughtco.com/using-command-line-arguments-2034196
  * https://stackoverflow.com/questions/8944199/how-to-deal-with-command-line-arguments-in-java
  * http://pholser.github.io/jopt-simple/
- * Maven: Jopt download: http://pholser.github.io/jopt-simple/download.html
+ * Maven: Jopt-Simple download: http://pholser.github.io/jopt-simple/download.html
  * https://dzone.com/articles/java-clis-part-6-jopt-simple
  * https://github.com/dustinmarx/java-cli-demos
  * http://marxsoftware.blogspot.ie/2017/10/diy-commandline.html
@@ -55,8 +56,8 @@ import java.io.IOException;
  * - Markdown syntax for readme's
  * 
  * 	TODO: 
- * 	- It would be better to take the location of the sqlite database as a parameter
  * 	- The ListArray<User> is populated but not really used ( just a prep for later examples)
+ *  - The Role class is not used ( just a prep for later examples)
  * 	
  *****************************************************************/
 
@@ -83,8 +84,8 @@ public class App
 			}
 			*/
 			
-			// A library for parsing the commandline that makes it easy to look for
-			// the -d option and get the database location/name passed in at the command line
+		// A library for parsing the commandline that makes it easy to look for
+		// the -d option and get the database location/name passed in at the command line
 		
 		try
 		{	
@@ -161,6 +162,10 @@ public class App
 	String databaseFile;
 	private	Scanner someInput;
 	private Date today;
+	
+	// if in Eclipse User and Role classes appear as errors it means you need to do a Maven Update on the project
+	// Right Click > Maven > Update Project as some times after a Maven clean 
+	// eclipse looses track of the dependency of classes within the current package
 	
 	@SuppressWarnings("unused")
 	private User user;
