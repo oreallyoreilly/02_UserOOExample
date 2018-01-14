@@ -26,6 +26,11 @@
 	 <artifactId>sqlite-jdbc</artifactId>
 	 <version>3.21.0.1</version>
  	</dependency>
+ 	<dependency>
+    <groupId>net.sf.jopt-simple</groupId>
+    <artifactId>jopt-simple</artifactId>
+    <version>4.9</version>
+    </dependency>
   </dependencies>
   
   <build>
