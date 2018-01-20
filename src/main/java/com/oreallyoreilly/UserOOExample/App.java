@@ -31,53 +31,6 @@ import org.apache.logging.log4j.core.lookup.EnvironmentLookup;
  *	Date: 2017
  *	@author COR
  *  
- * References: 
- * 
- * Eclipse
- * Ctrl + S to refresh problems if seeing missing method errors but they are there as added manually
- * Or pick create method with signature option when hover over the problem message 
- * and it will pick up your method or create a new one then you know you're in the wrong and not eclipse!
- * http://eclipsetutorial.sourceforge.net/totalbeginner.html
- * 
- * SQLite References
- * https://github.com/xerial/sqlite-jdbc#using-sqlitejdbc-with-maven2
- * http://tutorials.jenkov.com/java-collections/list.html
- * http://www.sqlitetutorial.net/sqlite-date/
- * http://www.sqlitetutorial.net/sqlite-java/
- * https://github.com/xerial/sqlite-jdbc
- * https://stackoverflow.com/questions/16725377/no-suitable-driver-found-sqlite
- * https://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html#ServicesResourceTransformer
- * https://www.thoughtco.com/using-command-line-arguments-2034196
- * https://stackoverflow.com/questions/8944199/how-to-deal-with-command-line-arguments-in-java
- * 
- * Command Line References
- * http://pholser.github.io/jopt-simple/
- * Maven: Jopt-Simple download: http://pholser.github.io/jopt-simple/download.html
- * https://dzone.com/articles/java-clis-part-6-jopt-simple
- * https://github.com/dustinmarx/java-cli-demos
- * http://marxsoftware.blogspot.ie/2017/10/diy-commandline.html
- * http://marxsoftware.blogspot.ie/2017/11/java-cmd-line-observations.html
- * https://github.com/remkop/picocli/wiki/CLI-Comparison
- * http://www.massapi.com/source/github/20/81/2081705684/src/java/voldemort/tools/ExportBDBToTextDump.java.html#88
- * 
- * Logging References
- * https://dzone.com/articles/how-configure-slf4j-different
- * https://stackify.com/log4j2-java/
- * https://www.journaldev.com/7128/log4j2-example-tutorial-configuration-levels-appenders
- * https://examples.javacodegeeks.com/enterprise-java/log4j/log4j-2-best-practices-example/
- * http://www.baeldung.com/log4j2-appenders-layouts-filters
- * http://musigma.org/logging/2017/11/06/logging.html
- * https://memorynotfound.com/log4j2-with-log4j2-xml-configuration-example/
- * https://stackoverflow.com/questions/47656300/use-log4j2-for-multiple-classes
- * http://www.codepreference.com/2017/02/how-to-fix-log4j2-problem-with-maven-shade-plugin.html
- * https://stackoverflow.com/questions/23434252/programmatically-change-log-level-in-log4j2
- * https://garygregory.wordpress.com/2016/01/11/changing-log-levels-in-log4j2/
- * http://www.logicbig.com/tutorials/misc/java-logging/slf4j-with-log4j2/
- * https://stackoverflow.com/questions/41498021/is-it-worth-to-use-slf4j-with-log4j2
- * https://github.com/matthiaswelz/journeyofcode/tree/master/log4j2args4j
- * 
- * Markdown references
- * https://daringfireball.net/projects/markdown/syntax
  * 
  * The purpose of this application is to provide an example for the following:
  * 
@@ -93,7 +46,6 @@ import org.apache.logging.log4j.core.lookup.EnvironmentLookup;
  * 
  * 	TODO: The ListArray<User> is populated but not really used ( just a prep for later examples)
  *  TODO: The Role class is not used ( just a prep for later examples)
- *  TODO: Refactor the command line parameters into a method
  *  TODO: Add JSON output for logging see: https://stackify.com/log4j2-java/
  *  TODO: JUnit tests
  * 	
@@ -103,98 +55,14 @@ public class App
 { 
 
 	public static void main(String args[])
-	{
+	{	
+		// To view the arguments being entered
+		// seeCommandlineInput(args);
 			
-			// To view the arguments being entered
-			
-			if (args.length == 0)
-	        {
-	            System.out.println("There were no commandline arguments passed!");
-	        }
-			else
-			{
-				// display the command line  entered 
-				for(int i = 0; i < args.length; i++) 
-				{
-		            System.out.println(args[i]);
-		            
-		        }
-			}
-			
-			
-		// A library for parsing the commandline that makes it easy to look for
+		// Using a library for parsing the commandline that makes it easy to look for
 		// the -d option and get the database location/name passed in at the command line
-		
-		try
-		{	
-			final OptionParser optionParser = new OptionParser();
-			
-			//define the allowed arguments
-			optionParser.acceptsAll(Arrays.asList("d", "database"), "Path and name of database file.")
-						.withRequiredArg()
-						.ofType(String.class)
-						.describedAs("SQlite database");
-			optionParser.acceptsAll(Arrays.asList("v", "verbose"), "Set logging level to INFO to see all levels of log messages").forHelp();			
-			optionParser.acceptsAll(Arrays.asList("h", "help"), "Display help/usage information").forHelp();
-			
-			final OptionSet options = optionParser.parse(args);
-			
-			Integer exitStatus = null;
-			
-			if (options.has("help"))
-			{
-				System.out.println("This program takes an SQL database with a User table as displays the users.");
-				System.out.println("It is provided as an example for teaching Java programming.");
-		        exitStatus = 0;
-			}
-			else if (!options.has("database"))
-			{
-				System.err.println("Option \"-d database\" is required");
-	            exitStatus = 1;
-			}
-			else if (!new File((String)options.valueOf("database")).isFile())
-			{
-		    	 	System.out.println("ERROR: Database file does not exist : " + (String)options.valueOf("database"));
-		    	 	System.out.println("If the file is in the same directory as the JAR then the location would be: databaseFileName.Extention");
-		    	 	System.out.println("for windows the database file location would be: C://folder/folder/databaseFileName.Extention");
-		    	 	System.out.println("for MAC the database file location would be: /Volumes/VolumeName/folder/folder/databaseFileName.Extention");
-		    	 	exitStatus = 1;
-			}
-			
-		   // if an error encountered
-		   if(exitStatus != null) {
-	            if(exitStatus == 0)
-	            {
-					printUsage(optionParser);
-	            		System.exit(0);
-	            }
-	            else
-	            {
-	            		printUsage(optionParser);
-	            	    System.exit(1);
-	            }
-	        }
-	
-		   // valid input so start the program with the name of the database file to use
-		   if (options.has("database") && options.has("verbose") )
-		   {
-			   String dbFile = "jdbc:sqlite:" + (String)options.valueOf("database");
-			   Level logLevel = Level.DEBUG;
-			   System.out.println("RUN WITH: Database: " + dbFile + " logging level requested: " + logLevel);
-			   App anApp = new App( dbFile, logLevel);
-		   }
-		   else
-		   {
-			   String dbFile = "jdbc:sqlite:" + (String)options.valueOf("database");
-			   System.out.println("RUN WITH: Database: " + dbFile + " logging as per main/resources/Log4J2.xml");
-			   App anApp = new App(dbFile);
-		   }
-		}
-        catch (OptionException argsEx)
-        {
-        		System.out.println("ERROR: Arguments\\parameter is not valid. " + argsEx);
-        }
-			
+		// and the -v to turn on debug mode for the logs
+		actionCommandlineInput(args);
 	}
 	
 	// DATA
@@ -232,7 +100,7 @@ public class App
 		LOG = LogManager.getLogger(App.class);
 		Configurator.setLevel(LOG.getName(), logLevel);
 		
-		// Lookup an enviromental variable
+		// Lookup an enviromental variable and send to log
 		EnvironmentLookup lookup = new EnvironmentLookup();
 		LOG.debug(lookup.lookup("JAVA_HOME"));
 
@@ -284,31 +152,12 @@ public class App
 		
      	this.userList = new ArrayList<User>();
 		
-        // make sure it can find the sqlite class in the Maven built JAR
-		// Ref: 
-     	// What to add into the Maven POM.xml: https://github.com/xerial/sqlite-jdbc
-     	// use of transformer: https://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html#ServicesResourceTransformer
-		// To use the sqlite driver the Maven POM.xml must be updated to include the class and a transformer
-     	
-     	// Below is debug code used to check that the sqlite class was being included in the build JAR
-		/*
-		try
-		{
-      	 Class.forName("org.sqlite.JDBC");
-		}
-        catch (ClassNotFoundException e) 
-        {
-			// if can't find the sqlite class in the deployment JAR
-        		// or see message: No suitable driver found for jdbc:sqlite:/xx.db
-        		// No sutible driver also means URL into connection is wrong e.g you are missing jdbc:sqlite: in front of file name
-            // System.err.println(e.getMessage());
-            LOG.error(e.getMessage());
-		}
-		*/
-		
+     	// check SQLite JAR available in MAVEN build
+     	// if see: No suitable driver found for jdbc:sqlite:/xx.db then two possibilities
+     	// a) SQLlite class missing or b) the name of the database file is not a URL
+     	// checkForSQLiteJAR();
 		
 		// Get JDBC connection to database
-		
 		Connection connection = null;
         try
         {
@@ -326,6 +175,7 @@ public class App
           
           while(resultSet.next())
           {
+        	  	  //could have used the other constructor
         	  	  User user  = new User();
         	  	  
               user.setUserID(resultSet.getInt("userID"));
@@ -369,6 +219,87 @@ public class App
 		
 	}//EOM
 	
+	// METHODS used by main() or debug methods
+	//............................................................
+	
+	/**
+	 * action the arguments presented at the commandline
+	 * assign the database file to use based on -d flag
+	 * set the level of logging info (default) or debug if use -v parameter
+	 */
+	 private static void actionCommandlineInput( String args[] )
+	 {
+		 try
+			{	
+				final OptionParser optionParser = new OptionParser();
+				
+				//define the allowed arguments
+				optionParser.acceptsAll(Arrays.asList("d", "database"), "Path and name of database file.")
+							.withRequiredArg()
+							.ofType(String.class)
+							.describedAs("SQlite database");
+				optionParser.acceptsAll(Arrays.asList("v", "verbose"), "Set logging level to INFO to see all levels of log messages").forHelp();			
+				optionParser.acceptsAll(Arrays.asList("h", "help"), "Display help/usage information").forHelp();
+				
+				final OptionSet options = optionParser.parse(args);
+				
+				Integer exitStatus = null;
+				
+				if (options.has("help"))
+				{
+					System.out.println("This program takes an SQL database with a User table as displays the users.");
+					System.out.println("It is provided as an example for teaching Java programming.");
+			        exitStatus = 0;
+				}
+				else if (!options.has("database"))
+				{
+					System.err.println("Option \"-d database\" is required");
+		            exitStatus = 1;
+				}
+				else if (!new File((String)options.valueOf("database")).isFile())
+				{
+			    	 	System.out.println("ERROR: Database file does not exist : " + (String)options.valueOf("database"));
+			    	 	System.out.println("If the file is in the same directory as the JAR then the location would be: databaseFileName.Extention");
+			    	 	System.out.println("for windows the database file location would be: C://folder/folder/databaseFileName.Extention");
+			    	 	System.out.println("for MAC the database file location would be: /Volumes/VolumeName/folder/folder/databaseFileName.Extention");
+			    	 	exitStatus = 1;
+				}
+				
+			   // if an error encountered
+			   if(exitStatus != null) {
+		            if(exitStatus == 0)
+		            {
+						printUsage(optionParser);
+		            		System.exit(0);
+		            }
+		            else
+		            {
+		            		printUsage(optionParser);
+		            	    System.exit(1);
+		            }
+		        }
+		
+			   // valid input so start the program with the name of the database file to use
+			   if (options.has("database") && options.has("verbose") )
+			   {
+				   String dbFile = "jdbc:sqlite:" + (String)options.valueOf("database");
+				   Level logLevel = Level.DEBUG;
+				   System.out.println("RUN WITH: Database: " + dbFile + " logging level requested: " + logLevel);
+				   App anApp = new App( dbFile, logLevel);
+			   }
+			   else
+			   {
+				   String dbFile = "jdbc:sqlite:" + (String)options.valueOf("database");
+				   System.out.println("RUN WITH: Database: " + dbFile + " logging as per main/resources/Log4J2.xml");
+				   App anApp = new App(dbFile);
+			   }
+			}
+	        catch (OptionException argsEx)
+	        {
+	        		System.out.println("ERROR: Arguments\\parameter is not valid. " + argsEx);
+	        }
+	 }//EOM
+	
 	/**
 	 * Write help message to standard output using
 	 * the provided instance of {@code OptionParser}.
@@ -399,6 +330,55 @@ public class App
 
         LOG.info("Appending string: {}.", "Application log test message - Hi");
 		 
+	 }//EOM
+	 
+	/**
+	 * View the arguments presented at the commandline
+	 */
+	 private static void seeCommandlineInput( String args[] )
+	 {	
+		if (args.length == 0)
+        {
+            System.out.println("There were no commandline arguments passed!");
+        }
+		else
+		{
+			// display the command line  entered 
+			for(int i = 0; i < args.length; i++) 
+			{
+	            System.out.println(args[i]);
+	            
+	        }
+		}
+		 
+	 }//EOM
+	 
+	/**
+	 * make sure the sqlite class is in the Maven built JAR
+	 * 
+	 */
+	 
+	 private static void checkForSQLiteJAR( String args[] )
+	 {	
+		// Ref: 
+     	// What to add into the Maven POM.xml: https://github.com/xerial/sqlite-jdbc
+     	// use of transformer: https://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html#ServicesResourceTransformer
+		// To use the sqlite driver the Maven POM.xml must be updated to include the class and a transformer
+     	
+     	// Below is debug code used to check that the sqlite class was being included in the build JAR
+		try
+		{
+      	 Class.forName("org.sqlite.JDBC");
+		}
+        catch (ClassNotFoundException e) 
+        {
+			// if can't find the sqlite class in the deployment JAR
+        		// or see message: No suitable driver found for jdbc:sqlite:/xx.db
+        		// No sutible driver also means URL into connection is wrong e.g you are missing jdbc:sqlite: in front of file name
+            // System.err.println(e.getMessage());
+            LOG.error(e.getMessage());
+		}
+
 	 }//EOM
 	
 }//EOC

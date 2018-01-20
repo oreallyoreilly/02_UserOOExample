@@ -97,7 +97,7 @@
             
     		</Logger>
     		
-    		<!-- A logger to specifically target the com.oreallyoreilly pakage so could set logging levels for just it -->
+    		<!-- A logger to specifically target the com.oreallyoreilly package so could set logging levels for just it -->
     
     		<Logger name="com.oreallyoreilly" level="info">
     		            
