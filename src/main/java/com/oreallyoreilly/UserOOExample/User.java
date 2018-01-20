@@ -1,5 +1,7 @@
 package com.oreallyoreilly.UserOOExample;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /*****************************************************************
 *	Date: 2017
@@ -23,6 +25,11 @@ public class User {
 	private int 	userStatus;
 	private String userLastUpdate;
 	
+	// This is added to every class that needs to log with one change
+	// The getLogger( ) part should contain the name of the class its in
+	// So you know the messages that came from objects of this class
+	private final Logger LOG = LogManager.getLogger(User.class);
+	
 	
 	// CONSTRUCTORS
 	//............................................................
@@ -30,7 +37,10 @@ public class User {
 	// if you comment out this constructor you will see errors in App as it uses
 	// setters and getters to create the user objects - good for demo if errors in IDE
 	
-	public User(){}
+	public User()
+	{
+		LOG.debug("Empty user object created");
+	}
 	
 	// Second constructor allowed as a different signature
 	
@@ -50,6 +60,8 @@ public class User {
 		this.userToken = userToken;
 		this.userStatus = userStatus;
 		this.userLastUpdate = userLastUpdate;
+		
+		LOG.debug("User object created : " + this.toString());
 	}
 
 	// METHODS - Gets and Sets

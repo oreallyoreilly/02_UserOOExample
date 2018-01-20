@@ -19,8 +19,11 @@ import java.util.Arrays;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.lookup.EnvironmentLookup;
 
 
 /*****************************************************************
@@ -29,6 +32,12 @@ import org.apache.logging.log4j.Logger;
  *	@author COR
  *  
  * References: 
+ * 
+ * Eclipse
+ * Ctrl + S to refresh problems if seeing missing method errors but they are there as added manually
+ * Or pick create method with signature option when hover over the problem message 
+ * and it will pick up your method or create a new one then you know you're in the wrong and not eclipse!
+ * http://eclipsetutorial.sourceforge.net/totalbeginner.html
  * 
  * SQLite References
  * https://github.com/xerial/sqlite-jdbc#using-sqlitejdbc-with-maven2
@@ -53,38 +62,51 @@ import org.apache.logging.log4j.Logger;
  * 
  * Logging References
  * https://dzone.com/articles/how-configure-slf4j-different
- * http://www.logicbig.com/tutorials/misc/java-logging/slf4j-with-log4j2/
- * https://stackoverflow.com/questions/41498021/is-it-worth-to-use-slf4j-with-log4j2
+ * https://stackify.com/log4j2-java/
+ * https://www.journaldev.com/7128/log4j2-example-tutorial-configuration-levels-appenders
  * https://examples.javacodegeeks.com/enterprise-java/log4j/log4j-2-best-practices-example/
  * http://www.baeldung.com/log4j2-appenders-layouts-filters
  * http://musigma.org/logging/2017/11/06/logging.html
  * https://memorynotfound.com/log4j2-with-log4j2-xml-configuration-example/
+ * https://stackoverflow.com/questions/47656300/use-log4j2-for-multiple-classes
+ * http://www.codepreference.com/2017/02/how-to-fix-log4j2-problem-with-maven-shade-plugin.html
+ * https://stackoverflow.com/questions/23434252/programmatically-change-log-level-in-log4j2
+ * https://garygregory.wordpress.com/2016/01/11/changing-log-levels-in-log4j2/
+ * http://www.logicbig.com/tutorials/misc/java-logging/slf4j-with-log4j2/
+ * https://stackoverflow.com/questions/41498021/is-it-worth-to-use-slf4j-with-log4j2
+ * https://github.com/matthiaswelz/journeyofcode/tree/master/log4j2args4j
  * 
  * Markdown references
  * https://daringfireball.net/projects/markdown/syntax
  * 
  * The purpose of this application is to provide an example for the following:
+ * 
  * - Demonstrates the use of development tools : GIT, MAVEN, Eclipse
  * - Demonstrates how to use Eclipse
  * - Provides a refresher of OOP in Java
+ * - Provide an introduction to project file structure layout - MAVEN Archetype
  * - Query a SQLite database User table and displays the users
  * - Provide an introduction to collections
  * - Provide an introduction to the command line interface and show that there are many solution options to just this simple feature
  * - Markdown syntax for readme's
+ * - Provide an introduction to logging
  * 
  * 	TODO: The ListArray<User> is populated but not really used ( just a prep for later examples)
  *  TODO: The Role class is not used ( just a prep for later examples)
+ *  TODO: Refactor the command line parameters into a method
+ *  TODO: Add JSON output for logging see: https://stackify.com/log4j2-java/
+ *  TODO: JUnit tests
  * 	
  *****************************************************************/
 
 public class App
 { 
-	
+
 	public static void main(String args[])
 	{
 			
 			// To view the arguments being entered
-			/*
+			
 			if (args.length == 0)
 	        {
 	            System.out.println("There were no commandline arguments passed!");
@@ -98,7 +120,7 @@ public class App
 		            
 		        }
 			}
-			*/
+			
 			
 		// A library for parsing the commandline that makes it easy to look for
 		// the -d option and get the database location/name passed in at the command line
@@ -112,7 +134,7 @@ public class App
 						.withRequiredArg()
 						.ofType(String.class)
 						.describedAs("SQlite database");
-			
+			optionParser.acceptsAll(Arrays.asList("v", "verbose"), "Set logging level to INFO to see all levels of log messages").forHelp();			
 			optionParser.acceptsAll(Arrays.asList("h", "help"), "Display help/usage information").forHelp();
 			
 			final OptionSet options = optionParser.parse(args);
@@ -152,13 +174,21 @@ public class App
 	            	    System.exit(1);
 	            }
 	        }
-			
-			// valid input so start the program with the name of the database file to use
-		   
-			String dbFile = "jdbc:sqlite:" + (String)options.valueOf("database");
-			
-			App anApp = new App(dbFile);
-			
+	
+		   // valid input so start the program with the name of the database file to use
+		   if (options.has("database") && options.has("verbose") )
+		   {
+			   String dbFile = "jdbc:sqlite:" + (String)options.valueOf("database");
+			   Level logLevel = Level.DEBUG;
+			   System.out.println("RUN WITH: Database: " + dbFile + " logging level requested: " + logLevel);
+			   App anApp = new App( dbFile, logLevel);
+		   }
+		   else
+		   {
+			   String dbFile = "jdbc:sqlite:" + (String)options.valueOf("database");
+			   System.out.println("RUN WITH: Database: " + dbFile + " logging as per main/resources/Log4J2.xml");
+			   App anApp = new App(dbFile);
+		   }
 		}
         catch (OptionException argsEx)
         {
@@ -171,7 +201,9 @@ public class App
 	//............................................................
 	//define attributes
 	
-	private static final Logger LOG = LogManager.getLogger(App.class);
+	// This is added to every class that needs to log with one change
+	// The getLogger( ) part should contain the name of the class its in
+	private static Logger LOG;
 	
 	private	Scanner someInput;
 	private Date today;
@@ -193,14 +225,27 @@ public class App
 	
 	// CONSTRUCTORS
 	//............................................................
-	
-	public App( String dbFile )
-	{
-		//initialise variables
+		
+	public App(String dbFile, Level logLevel)
+	{		
+		//associate logging with this class so know the messages that came from objects of this class
+		LOG = LogManager.getLogger(App.class);
+		Configurator.setLevel(LOG.getName(), logLevel);
+		
+		// Lookup an enviromental variable
+		EnvironmentLookup lookup = new EnvironmentLookup();
+		LOG.debug(lookup.lookup("JAVA_HOME"));
+
+		// Check the log level requested
+		LOG.info("Commandline requested log level:" + logLevel );		
+		LOG.info("Application started with log level debug:" + LOG.isDebugEnabled());
+		
+		//database file to use
 		this.databaseFile = dbFile;
+		LOG.debug("Database file:" + dbFile);
 		
 		//log test
-		testLogOutput();
+		//testLogOutput();
 		
         //create objects 
 		this.someInput = new Scanner(System.in);
@@ -216,6 +261,12 @@ public class App
 		System.exit(0);
 	}
 	
+	public App(String dbFile)
+	{
+		this( dbFile, Level.INFO );
+	}
+	
+
 	// METHODS
 	//............................................................
 	
@@ -227,7 +278,10 @@ public class App
 	{
 
 		this.today = new Date();
-		System.out.println( "Getting list of Users from Database as of " + today );
+		
+		// System.out.println( "Getting list of Users from Database as of " + today );
+		LOG.debug("Getting list of Users from Database as of " + today);
+		
      	this.userList = new ArrayList<User>();
 		
         // make sure it can find the sqlite class in the Maven built JAR
@@ -247,7 +301,8 @@ public class App
 			// if can't find the sqlite class in the deployment JAR
         		// or see message: No suitable driver found for jdbc:sqlite:/xx.db
         		// No sutible driver also means URL into connection is wrong e.g you are missing jdbc:sqlite: in front of file name
-            System.err.println(e.getMessage());
+            // System.err.println(e.getMessage());
+            LOG.error(e.getMessage());
 		}
 		*/
 		
@@ -285,7 +340,8 @@ public class App
               this.userList.add(user);
               
               // print the results by using the toString() on User
-              System.out.println(user);
+              //System.out.println(user);
+              LOG.debug( "User object : " + user);
           }
         	  
         }
@@ -293,7 +349,8 @@ public class App
         {
           // if the error message is "out of memory",
           // it probably means no database file is found
-          System.err.println(e.getMessage());
+          // System.err.println(e.getMessage());
+          LOG.error(e.getMessage());
         } 
         finally
         {
@@ -305,7 +362,8 @@ public class App
           catch(SQLException e)
           {
             // connection close failed.
-            System.err.println(e);
+            // System.err.println(e);
+            LOG.error(e.getMessage());
           }
         }
 		
@@ -323,7 +381,8 @@ public class App
 	      }
 	      catch (IOException ioEx)
 	      {
-	         System.out.println("ERROR: Unable to print usage - " + ioEx);
+	         // System.out.println("ERROR: Unable to print usage - " + ioEx);
+	         LOG.error("ERROR: Unable to print usage - " + ioEx);
 	      }
 	 }//EOM
 	 
@@ -332,13 +391,13 @@ public class App
 	 */
 	 private static void testLogOutput()
 	 {
-		LOG.debug("This will be printed on debug");
-        LOG.info("This will be printed on info");
-        LOG.warn("This will be printed on warn");
-        LOG.error("This will be printed on error");
-        LOG.fatal("This will be printed on fatal");
+		LOG.debug("Log test: Test printed on debug");
+        LOG.info("Log test: Test printed on info");
+        LOG.warn("Log test: Test printed on warn");
+        LOG.error("Log test: Test printed on error");
+        LOG.fatal("Log test: Test printed on fatal");
 
-        LOG.info("Appending string: {}.", "Hello, World");
+        LOG.info("Appending string: {}.", "Application log test message - Hi");
 		 
 	 }//EOM
 	

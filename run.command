@@ -19,7 +19,10 @@ clear
 #java -cp target/02_UserOOExample-v1.jar com.oreallyoreilly.UserOOExample.App -d oreallyoreilly.db
 
 #development where the JAR is in the target folder and the database in the database folder
-java -cp target/02_UserOOExample-v1.jar com.oreallyoreilly.UserOOExample.App -d /Volumes/DataHD/Dropbox/_DEV2017/JAVA-BASIC/02_UserOOExample/database/oreallyoreilly.db
+#java -cp target/02_UserOOExample-v1.jar com.oreallyoreilly.UserOOExample.App -d /Volumes/DataHD/Dropbox/_DEV2017/JAVA-BASIC/02_UserOOExample/database/oreallyoreilly.db
+
+#development where the JAR is in the target folder and the database in the database folder with verbose logging on
+java -cp target/02_UserOOExample-v1.jar com.oreallyoreilly.UserOOExample.App -d /Volumes/DataHD/Dropbox/_DEV2017/JAVA-BASIC/02_UserOOExample/database/oreallyoreilly.db -v
 
 #deployment where the JAR and database are in the same folder
 #java -cp 02_UserOOExample-v1.jar com.oreallyoreilly.UserOOExample.App -d oreallyoreilly.db
